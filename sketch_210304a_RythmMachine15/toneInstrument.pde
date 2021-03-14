@@ -31,23 +31,23 @@ class ToneInstrument implements Instrument
     switch(params.modform) 
     {
     case 1:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp*5, Waves.SINE); 
-      lfo.setPhase(.5);   
-      lfo.patch(sum);
+      //lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp*5, Waves.SINE); 
+      //lfo.setPhase(.5);   
+      //lfo.patch(sum);
       contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       break;
     case 2:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp, Waves.SQUARE);  
-      lfo.setPhase(.5);
-      lfo.patch(sum);     
+      //lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp, Waves.SQUARE);  
+      //lfo.setPhase(.5);
+      //lfo.patch(sum);     
       contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       break;
     case 3:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp, Waves.SAW);   
-      lfo.setPhase(.5);   
-      lfo.patch(sum);   
+      //lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp, Waves.SAW);   
+      //lfo.setPhase(.5);   
+      //lfo.patch(sum);   
       contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622  );    
       contant.patch(sum);
       break;
@@ -58,28 +58,28 @@ class ToneInstrument implements Instrument
     {
     case 0:
       osc = new Oscil( params.freq, 1, Waves.SINE );         
-      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
+//      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
       midi2hz.patch(osc.frequency);
       break;
     case 1:
       osc = new Oscil( params.freq, 1, Waves.TRIANGLE );
-      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr);
+//      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr);
       midi2hz.patch(osc.frequency);
       break;
     case 2:
       osc = new Oscil( params.freq, 1, Waves.SQUARE );
-      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
+//      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
       midi2hz.patch(osc.frequency);
       break;
     case 3:
       osc = new Oscil( params.freq, 1, new Wavetable(new float[]{0, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 0 }) );
-      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
+//      osc.patch(overdrive).patch(fold).patch(bitcrush).patch( adsr );
       midi2hz.patch(osc.frequency);
       break;     
     case 4:
       noise = new Noise(params.amp);
       mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.LP );
-      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+//      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
       midi2hz.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.RED);
       //noise1.patch(adsr1);
@@ -87,7 +87,8 @@ class ToneInstrument implements Instrument
     case 5:
       noise = new Noise(params.amp);
       mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.HP );
-      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+//      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+      noise.patch(mfilter).patch( adsr);
       midi2hz.patch(mfilter.frequency);         
       //noise1.setTint(Noise.Tint.PINK);
       //noise1.patch(adsr1);
@@ -95,7 +96,8 @@ class ToneInstrument implements Instrument
     case 6:
       noise = new Noise(params.amp);
       mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.BP );
-      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+//      noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+      noise.patch(mfilter).patch( adsr);
       midi2hz.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.BROWN);
       //noise1.patch(adsr1);
