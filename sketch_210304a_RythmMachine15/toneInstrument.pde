@@ -77,16 +77,17 @@ class ToneInstrument implements Instrument
       midi2hz.patch(osc.frequency);
       break;     
     case 4:
-      noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.LP );
+      noise = new Noise(1);
+      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.LP );
       noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
+      //noise.patch(mfilter).patch( adsr );
       midi2hz.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.RED);
       //noise1.patch(adsr1);
       break;
     case 5:
       noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.HP );
+      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.HP );
       noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
       midi2hz.patch(mfilter.frequency);         
       //noise1.setTint(Noise.Tint.PINK);
@@ -94,7 +95,7 @@ class ToneInstrument implements Instrument
       break;
     case 6:
       noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 1, MoogFilter.Type.BP );
+      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.BP );
       noise.patch(overdrive).patch(fold).patch(bitcrush).patch(mfilter).patch( adsr );
       midi2hz.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.BROWN);

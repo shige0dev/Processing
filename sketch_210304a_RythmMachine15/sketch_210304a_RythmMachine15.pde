@@ -31,15 +31,13 @@ Params[][] params = new Params[6][2];
 void setup() {
   size(800, 500);
   frameRate(600);
-
-   
+  setupGUI();
   for(int i=0;i<6;++i){
     params[i][0] = new Params();
     params[i][1] = new Params();
   }
-  setupGUI();
   setGUIValue();
-
+  
   minim = new Minim(this);
   out = minim.getLineOut();  
   out.setTempo(bpm);
@@ -165,11 +163,6 @@ void current6() {
   getGUIValue();
   out.playNote( 0, 1.0, new ToneInstrument( params[Number][0] ) );
   out.playNote( 0, 1.0, new ToneInstrument( params[Number][1] ) );
-}
-
-void parts(int value){
-  Number = value;
-  setGUIValue();
 }
 
 void draw()
