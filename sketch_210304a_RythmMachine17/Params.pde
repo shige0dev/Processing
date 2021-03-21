@@ -7,6 +7,7 @@ class Params {
   float modamp=0 ;
   float modfreq=0;
 
+  int egform = 0;
   float a=0;
   float d=0.15;  
   

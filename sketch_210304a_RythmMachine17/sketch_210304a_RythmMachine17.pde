@@ -12,12 +12,11 @@ Minim minim;
 AudioOutput out;
 Oscil sineOsc;
 ADSR  adsr;
-Midi2Hz midi2hz;
-Summer sum;
 
 int bpm;
 int count =0;
 int beat = 0;
+int part = 1;
 
 ControlP5 cp5;
 
@@ -25,11 +24,23 @@ Params[][] params = new Params[6][2];
 
 void playNote(Params params)
 {
-      
-//  adsr = new ADSR( params.amp, params.a, 0.0, 1.0, params.d);
-//  adsr = new ADSR( params.amp, 0.1, 0.0, 1.0 , params.d);
-  adsr = new ADSR( params.amp*0.02, params.a, params.d, 0.0 , params.d);
-  out.playNote( 0, float(bpm)/120 , new ToneInstrument( params, adsr ) );
+    switch(params.egform) 
+    {
+    case 1:      
+      adsr = new ADSR( params.amp*0.04, params.a, params.d, 0.0 , params.d);
+      out.playNote( 0, float(bpm)/120 , new ToneInstrument( params, adsr ) );
+     break;
+    case 2:
+      adsr = new ADSR( params.amp*0.04, 0.05*params.a, 0.0, 1.0 , params.d);
+      out.playNote( 0, float(bpm)/120 *params.a , new ToneInstrument( params, adsr ) );   
+     break;
+    case 3:
+      adsr = new ADSR( params.amp*0.04, 0.05*params.a, params.d, 0.0 , params.d);
+      out.playNote( 0, params.a , new ToneInstrument( params, adsr ) );   
+      out.playNote( 0, params.a , new ToneInstrument( params, adsr ) );  
+      out.playNote( 0, params.a , new ToneInstrument( params, adsr ) );        
+     break; 
+    }
 }
 
 
@@ -120,56 +131,59 @@ void bang6() {
   }
 }
 
-void current1() {
-  Number = 0;
-  Parts.setValue(Number);
+void part1() {
+  part = 0;
   setGUIValue();
-  getGUIValue(); 
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+  changeActivePartColor(part); 
+  playNote(params[part][0]);
+  playNote(params[part][1]);  
 }
-void current2() {
-  Number = 1;
-  Parts.setValue(Number);
+void part2() {
+  part = 1;
   setGUIValue();
-  getGUIValue();  
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+  changeActivePartColor(part);   
+  playNote(params[part][0]);
+  playNote(params[part][1]);  
 }
-void current3() {
-  Number = 2;
-  Parts.setValue(Number);
+void part3() {
+  part = 2;
   setGUIValue();
-  getGUIValue();  
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+  changeActivePartColor(part);   
+  playNote(params[part][0]);
+  playNote(params[part][1]);  
 }
-void current4() {
-  Number = 3;
-  Parts.setValue(Number);
+void part4() {
+  part = 3;
   setGUIValue();
-  getGUIValue();  
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+  changeActivePartColor(part);
+  playNote(params[part][0]);
+  playNote(params[part][1]);  
 }
-void current5() {
-  Number = 4;
-  Parts.setValue(Number);
-  setGUIValue();
-  getGUIValue();  
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+void part5() {
+  part = 4;
+  setGUIValue();  
+  changeActivePartColor(part);
+  playNote(params[part][0]);
+  playNote(params[part][1]);  
 
 }
-void current6() {
-  Number = 5;
-  Parts.setValue(Number);
+
+void part6() {
+  part = 5;
   setGUIValue();
-  getGUIValue();
-  playNote(params[Number][0]);
-  playNote(params[Number][1]);  
+  changeActivePartColor(part);
+  playNote(params[part][0]);
+  playNote(params[part][1]);
 }
 
+void changeActivePartColor(int _part){
+  for(int i=1;i<7;i++){
+  cp5.getController("part"+i).setColorActive(color(0, 170, 255));
+  cp5.getController("part"+i).setColorForeground(color(0, 116, 217));
+  } 
+  cp5.getController("part"+(_part+1)).setColorActive(color(220, 0, 0));
+  cp5.getController("part"+(_part+1)).setColorForeground(color(196, 0, 0));
+}
 
 void draw()
 {
@@ -184,18 +198,19 @@ void draw()
     float x1  =  map( i, 0, out.bufferSize(), 170, width-120 );
     float x2  =  map( i+1, 0, out.bufferSize(), 170, width-120 );
     // draw a line from one buffer position to the next for both channels
-    line( x1, 50 + out.left.get(i)*20, x2, 50 + out.left.get(i+1)*20);
-    line( x1, 80 + out.right.get(i)*20, x2, 80 + out.right.get(i+1)*20);
+    line( x1, 50 + out.left.get(i)*100, x2, 50 + out.left.get(i+1)*100);
+    line( x1, 80 + out.right.get(i)*100, x2, 80 + out.right.get(i+1)*100);
   }  
 }
 
 class RhythmMachine implements Instrument {
 
   void noteOn(float duration) {
-    getGUIValue();
+   getGUIValue();
+  //println( cp5.getController("Mute1").getValue() );
    
    for(int i=0;i<6;i++){
-     if (toggles[i+1][beat].getBooleanValue()) {
+     if (toggles[i+1][beat].getBooleanValue() & ( cp5.getController("mute"+(i+1)).getValue() == 1 )) {
       playNote( params[i][0] );
       playNote( params[i][1] );
      }

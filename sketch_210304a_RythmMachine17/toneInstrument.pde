@@ -10,7 +10,9 @@ class ToneInstrument implements Instrument
   Midi2Hz midi2hz;
   Params params;
   ADSR  adsr;
- 
+  ADSR  modadsr;
+  Constant constant2;
+  
   // constructor for this instrument
  ToneInstrument( Params _params ,ADSR _adsr)
   {
@@ -22,16 +24,18 @@ class ToneInstrument implements Instrument
     switch(params.modform) 
     {
     case 1:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp*5, Waves.SINE); 
-      lfo.setPhase(.5);   
-      lfo.patch(sum);
+      modadsr = new ADSR( 1.0, 0.01, 32/params.modfreq , 0.0, 32/params.modfreq );
+      constant2 = new Constant(params.modamp);
+      constant2.patch(modadsr).patch(sum); 
+      //float[] a = sum.getLastValues();
+      //println(a.length);
       contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       break;
     case 2:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp, Waves.SQUARE);  
-      lfo.setPhase(.5);
-      lfo.patch(sum);     
+      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp*5, Waves.SINE); 
+      lfo.setPhase(.5);   
+      lfo.patch(sum); 
       contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       break;
@@ -99,6 +103,7 @@ class ToneInstrument implements Instrument
     {
       // turn on the ADSR
       adsr.noteOn();
+      if(params.modform == 1){modadsr.noteOn();}
       // patch to the output
       adsr.patch(out);
     }
@@ -110,5 +115,8 @@ class ToneInstrument implements Instrument
       adsr.unpatchAfterRelease(out);
       // call the noteOff 
       adsr.noteOff();
+
+      if(params.modform == 1){
+        modadsr.noteOff();}
     }
   }
