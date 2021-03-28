@@ -8,6 +8,8 @@ import ddf.minim.effects.*;
 
 import controlP5.*;
 
+PrintWriter csvfile;
+
 Minim minim;
 AudioOutput out;
 Oscil sineOsc;
@@ -47,6 +49,14 @@ void playNote(Params params)
 void setup() {
   size(800, 500);
   frameRate(600);
+  
+
+openSetting();
+saveSetting();
+closeSetting();
+loadSetting();
+  
+  
   setupGUI();
   for(int i=0;i<6;++i){
     params[i][0] = new Params();
@@ -60,6 +70,28 @@ void setup() {
   out.playNote(0.0, 0.25, new RhythmMachine() );
 }
 
+void loadSetting(){
+  Table csvData = loadTable("setting.csv","header");
+  for(int i=0;i<csvData.getRowCount();i++){
+    println(csvData.getRow(i).getFloat("x"));
+  }
+}
+
+void openSetting(){
+  csvfile = createWriter("setting.csv");
+}
+
+void saveSetting(){
+  csvfile.println("x,y");
+  for(int i=0;i<10;i++){
+  csvfile.printf("%d,%d\n",8,4);
+  }
+}
+
+void closeSetting(){
+  csvfile.flush();
+  csvfile.close();
+}
 
 void bang0() {
   for (int i = 0; i < 16; i++) {
