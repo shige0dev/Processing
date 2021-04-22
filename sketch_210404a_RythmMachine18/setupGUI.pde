@@ -2,11 +2,11 @@ Knob Bpm;
 
 Knob Amp1,Amp2;
 Knob WaveForm1, WaveForm2;
-Knob Freq1, Freq2; 
+Knob Pitch1, Pitch2; 
 
 Knob ModForm1 , ModForm2;
-Knob ModAmp1,ModAmp2;
-Knob ModFreq1,ModFreq2;
+Knob ModAmount1,ModAmount2;
+Knob ModRate1,ModRate2;
 
 //Knob EGform1, EGform2;
 Knob EGform1,EGform2;
@@ -75,13 +75,13 @@ void setupGUI() {
             .setDragDirection(Knob.VERTICAL)
             .setRadius(knobRadius);   
 
-  Freq1 = cp5.addKnob("Freq1")
+  Pitch1 = cp5.addKnob("Pitch1")
     .setRange(0, 255)
     .setValue(64)
     .setPosition( width/14 * 4- knobRadius, height/8 * 2 - knobRadius)
     .setDragDirection(Knob.VERTICAL)
     .setRadius(knobRadius);
-  Freq2 = cp5.addKnob("Freq2")
+  Pitch2 = cp5.addKnob("Pitch2")
     .setRange(0, 255)
     .setValue(64)
     .setPosition( width/14 * 4- knobRadius, height/8 * 3 - knobRadius)
@@ -111,26 +111,26 @@ void setupGUI() {
     .setDragDirection(Knob.VERTICAL)
     .setRadius(knobRadius);  
     
-  ModAmp1 = cp5.addKnob("ModAmp1")
+  ModAmount1 = cp5.addKnob("ModAmount1")
     .setRange(-100, 100)
     .setValue(0)
     .setPosition( width/14 * 7- knobRadius, height/8 * 2 - knobRadius)
     .setDragDirection(Knob.VERTICAL)
     .setRadius(knobRadius);
-  ModAmp2 = cp5.addKnob("ModAmp2")
+  ModAmount2 = cp5.addKnob("ModAmount2")
     .setRange(-100, 100)
     .setValue(0)
     .setPosition( width/14 * 7- knobRadius, height/8 * 3 - knobRadius)
     .setDragDirection(Knob.VERTICAL)
     .setRadius(knobRadius); 
   
-  ModFreq1 = cp5.addKnob("ModFreq1")
+  ModRate1 = cp5.addKnob("ModRate1")
     .setRange(1, 255)
     .setValue(4)
     .setPosition( width/14 * 8- knobRadius, height/8 * 2 - knobRadius)
     .setDragDirection(Knob.VERTICAL)
     .setRadius(knobRadius);
-  ModFreq2 = cp5.addKnob("ModFreq2")
+  ModRate2 = cp5.addKnob("ModRate2")
     .setRange(1, 255)
     .setValue(4)
     .setPosition( width/14 * 8- knobRadius, height/8 * 3 - knobRadius)
@@ -280,11 +280,11 @@ void setupGUI() {
 void setGUIValue(){
     WaveForm1.setValue(params[part][0].waveform );
     Amp1.setValue(params[part][0].amp );
-    Freq1.setValue(params[part][0].freq );
+    Pitch1.setValue(params[part][0].pitch );
 
     ModForm1.setValue(params[part][0].modform );
-    ModAmp1.setValue(params[part][0].modamp);
-    ModFreq1.setValue(params[part][0].modfreq);
+    ModAmount1.setValue(params[part][0].modamount);
+    ModRate1.setValue(params[part][0].modrate);
 
     EGform1.setValue(params[part][0].egform );
     A1.setValue(params[part][0].a );
@@ -297,11 +297,11 @@ void setGUIValue(){
 
     WaveForm2.setValue(params[part][1].waveform );
     Amp2.setValue(params[part][1].amp );
-    Freq2.setValue(params[part][1].freq );
-
+    Pitch2.setValue(params[part][1].pitch );
+    
     ModForm2.setValue(params[part][1].modform );
-    ModAmp2.setValue(params[part][1].modamp);
-    ModFreq2.setValue(params[part][1].modfreq);
+    ModAmount2.setValue(params[part][1].modamount);
+    ModRate2.setValue(params[part][1].modrate);
 
     EGform2.setValue(params[part][1].egform );
     A2.setValue(params[part][1].a );
@@ -315,11 +315,11 @@ void getGUIValue() {
     //println("getValue");
     params[part][0].waveform = int(WaveForm1.getValue());
     params[part][0].amp = Amp1.getValue();
-    params[part][0].freq= Freq1.getValue();
+    params[part][0].pitch= Pitch1.getValue();
 
     params[part][0].modform = int(ModForm1.getValue());
-    params[part][0].modamp  = ModAmp1.getValue();
-    params[part][0].modfreq = ModFreq1.getValue();
+    params[part][0].modamount  = ModAmount1.getValue();
+    params[part][0].modrate = ModRate1.getValue();
  
     params[part][0].egform = int(EGform1.getValue());  
     params[part][0].a = A1.getValue();
@@ -330,11 +330,11 @@ void getGUIValue() {
 
     params[part][1].waveform = int(WaveForm2.getValue());
     params[part][1].amp = Amp2.getValue();
-    params[part][1].freq= Freq2.getValue();
+    params[part][1].pitch= Pitch2.getValue();
 
     params[part][1].modform = int(ModForm2.getValue());
-    params[part][1].modamp  = ModAmp2.getValue();
-    params[part][1].modfreq = ModFreq2.getValue();
+    params[part][1].modamount  = ModAmount2.getValue();
+    params[part][1].modrate = ModRate2.getValue();
     
     params[part][1].egform = int(EGform2.getValue());    
     params[part][1].a = A2.getValue();

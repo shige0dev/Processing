@@ -12,6 +12,7 @@ class ToneInstrument implements Instrument
   ADSR  adsr;
   ADSR  modadsr;
   Constant constant2;
+  Abs abs;
   
   // constructor for this instrument
  ToneInstrument( Params _params ,ADSR _adsr)
@@ -25,36 +26,35 @@ class ToneInstrument implements Instrument
     switch(params.modform) 
     {
     case 1:
-      modadsr = new ADSR( 1.0, 0.001, 500/(params.modfreq*params.modfreq) , 0.0, 500/(params.modfreq*params.modfreq) );
-      constant2 = new Constant(params.modamp*0.7);
+      modadsr = new ADSR( 1.0, 0.001, 500/(params.modrate*params.modrate) , 0.0, 500/(params.modrate*params.modrate) );
+      constant2 = new Constant(params.modamount*0.7);
       constant2.patch(modadsr).patch(sum); 
-      contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
+      contant = new Constant( log((params.pitch +1)*(params.pitch +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       sum.patch(midi2hz).patch(mod);
       break;
     case 2:
-      lfo = new Oscil( pow(2, params.modfreq/12 - 4), params.modamp*5, Waves.SINE); 
+      lfo = new Oscil( pow(2.0, params.modrate/12 - 4), params.modamount*5, Waves.SINE); 
       lfo.setPhase(.5);   
       lfo.patch(sum); 
-      contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622   );    
+      contant = new Constant( log((params.pitch +1)*(params.pitch +1) + 200 )*17.31 -82.91622   );    
       contant.patch(sum);
       sum.patch(midi2hz).patch(mod);
       break;
     case 3:
       float[] waveform = new float[8192];
-      for(int i=0;i<32;i++){
-        float r1 = random(2.0)-1.0;
-        float r2 = random(2.0)-1.0;
-        for(int j=0;j<256;j++){
-          waveform[i*256+j] = (r1*j/256 + r2*(255-j)/256 );
+      for(int i=0;i<128;i++){
+        float r1 = random(1.0);
+        float r2 = random(1.0);
+        for(int j=0;j<64;j++){
+          waveform[i*64+j] = (r1*j/64 + r2*(63-j)/64 );
         }
       }
-      //println(waveform);
-      lfo = new Oscil(params.modfreq/200
-                      ,params.modamp*params.modamp*params.modamp*0.12
+      lfo = new Oscil(params.modrate/1000
+                      ,abs(params.modamount*params.modamount*params.modamount*0.12)
                       ,new Wavetable(waveform) );
       lfo.patch(mod);
-      contant = new Constant( log((params.freq +1)*(params.freq +1) + 200 )*17.31 -82.91622);  
+      contant = new Constant( (log((params.pitch +1)*(params.pitch +1) + 200 )*17.31 -82.91622) - abs(params.modamount*params.modamount*params.modamount*0.12) );  
       contant.patch(midi2hz).patch(mod);
       break;
     }
@@ -62,28 +62,28 @@ class ToneInstrument implements Instrument
     switch(params.waveform)
     {
     case 0:
-      osc = new Oscil( params.freq, 1, Waves.SINE );         
+      osc = new Oscil( params.pitch, 1, Waves.SINE );         
       osc.patch( adsr );
       mod.patch(osc.frequency);
       break;
     case 1:
-      osc = new Oscil( params.freq, 1, Waves.TRIANGLE );
+      osc = new Oscil( params.pitch, 1, Waves.TRIANGLE );
       osc.patch( adsr);
       mod.patch(osc.frequency);
       break;
     case 2:
-      osc = new Oscil( params.freq, 1, Waves.SQUARE );
+      osc = new Oscil( params.pitch, 1, Waves.SQUARE );
       osc.patch( adsr );
-      midi2hz.patch(osc.frequency);
+      mod.patch(osc.frequency);
       break;
     case 3:
-      osc = new Oscil( params.freq, 1, new Wavetable(new float[]{0, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 0 }) );
+      osc = new Oscil( params.pitch, 1, new Wavetable(new float[]{0, -1.0, -0.9, -0.8, -0.7, -0.6, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 0 }) );
       osc.patch( adsr );
       mod.patch(osc.frequency);
       break;     
     case 4:
       noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.LP );
+      mfilter = new MoogFilter( params.pitch, 0, MoogFilter.Type.LP );
       noise.patch(mfilter).patch( adsr );
       mod.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.RED);
@@ -91,7 +91,7 @@ class ToneInstrument implements Instrument
       break;
     case 5:
       noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.HP );
+      mfilter = new MoogFilter( params.pitch, 0, MoogFilter.Type.HP );
       noise.patch(mfilter).patch( adsr );
       mod.patch(mfilter.frequency);         
       //noise1.setTint(Noise.Tint.PINK);
@@ -99,7 +99,7 @@ class ToneInstrument implements Instrument
       break;
     case 6:
       noise = new Noise(params.amp);
-      mfilter = new MoogFilter( params.freq, 0, MoogFilter.Type.BP );
+      mfilter = new MoogFilter( params.pitch, 0, MoogFilter.Type.BP );
       noise.patch(mfilter).patch( adsr );
       mod.patch(mfilter.frequency);
       //noise1.setTint(Noise.Tint.BROWN);

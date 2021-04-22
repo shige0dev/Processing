@@ -1,11 +1,11 @@
 class Params {
   int   waveform=0;
   float amp=0.1 ;
-  float freq=55;
+  float pitch=55;
 
   int   modform=0;
-  float modamp=0 ;
-  float modfreq=0;
+  float modamount=0 ;
+  float modrate=0;
 
   int egform = 0;
   float a=0;
